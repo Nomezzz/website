@@ -7,6 +7,9 @@ import subprocess
 app = Flask(__name__)
 CORS(app)
 
+# Użycie zmiennej środowiskowej PORT, jeśli jest dostępna, lub domyślnie 5000
+port = int(os.environ.get("PORT", 5000))
+
 # Domyślny folder pobierania
 DEFAULT_DOWNLOAD_FOLDER = str(Path.home() / "Downloads")
 
@@ -19,30 +22,24 @@ def download_video():
         if not video_url:
             return jsonify({"error": "URL jest wymagany"}), 400
         
-         # Tymczasowy folder na pliki
-        output_file = "downloaded_video.%(ext)s"
-
         # Pobieranie wideo za pomocą yt-dlp
+        output_file = f"{DEFAULT_DOWNLOAD_FOLDER}/%(title)s.%(ext)s"
         subprocess.run([
             "yt-dlp",
             "--no-mtime",
-            "-o", f"{DEFAULT_DOWNLOAD_FOLDER}/%(title)s.%(ext)s",
+            "-o", output_file,
             video_url
         ], check=True)
 
-        # Znalezienie pobranego pliku (możesz to dopasować do konkretnych potrzeb)
+        # Znalezienie pobranego pliku (dopasowanie do nazwy pliku)
         downloaded_file = next(
-            (f for f in os.listdir() if f.startswith("downloaded_video")),
+            (f for f in os.listdir(DEFAULT_DOWNLOAD_FOLDER) if f.startswith("downloaded_video")),
             None
         )
 
         if downloaded_file:
             # Wysyłanie pliku do użytkownika
-            return send_file(downloaded_file, as_attachment=True)
-        
-
-        
-
+            return send_file(os.path.join(DEFAULT_DOWNLOAD_FOLDER, downloaded_file), as_attachment=True)
 
         return jsonify({"message": "Pobieranie skończone pomyślnie!"}), 200
 
@@ -51,4 +48,4 @@ def download_video():
         return jsonify({"error": "Coś poszło nie tak"}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=port, debug=True)
