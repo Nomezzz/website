@@ -1,3 +1,4 @@
 Flask==2.2.5
 Flask-CORS==3.0.10
 yt-dlp==2024.06.04
+dotenv
