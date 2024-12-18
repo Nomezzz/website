@@ -1,10 +1,11 @@
 import os
 from pathlib import Path
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, send_from_directory
 from flask_cors import CORS
 import subprocess
 
-app = Flask(__name__)
+# Tworzymy aplikację Flask
+app = Flask(__name__, static_folder="build")  # build to folder z zbudowanym frontendem
 CORS(app)
 
 # Użycie zmiennej środowiskowej PORT, jeśli jest dostępna, lub domyślnie 5000
@@ -14,9 +15,12 @@ port = int(os.environ.get("PORT", 5000))
 DEFAULT_DOWNLOAD_FOLDER = str(Path.home() / "Downloads")
 
 @app.route("/")
-def home():
-    return "Backend działa poprawnie!"
+def serve_frontend():
+    return send_from_directory(app.static_folder, "index.html")
 
+@app.route("/<path:path>")
+def serve_static_files(path):
+    return send_from_directory(app.static_folder, path)
 
 @app.route("/download", methods=["POST"])
 def download_video():
@@ -35,16 +39,6 @@ def download_video():
             "-o", output_file,
             video_url
         ], check=True)
-
-        # Znalezienie pobranego pliku (dopasowanie do nazwy pliku)
-        downloaded_file = next(
-            (f for f in os.listdir(DEFAULT_DOWNLOAD_FOLDER) if f.startswith("downloaded_video")),
-            None
-        )
-
-        if downloaded_file:
-            # Wysyłanie pliku do użytkownika
-            return send_file(os.path.join(DEFAULT_DOWNLOAD_FOLDER, downloaded_file), as_attachment=True)
 
         return jsonify({"message": "Pobieranie skończone pomyślnie!"}), 200
 
