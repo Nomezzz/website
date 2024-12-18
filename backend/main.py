@@ -13,6 +13,11 @@ port = int(os.environ.get("PORT", 5000))
 # Domyślny folder pobierania
 DEFAULT_DOWNLOAD_FOLDER = str(Path.home() / "Downloads")
 
+@app.route("/")
+def home():
+    return "Backend działa poprawnie!"
+
+
 @app.route("/download", methods=["POST"])
 def download_video():
     try:
