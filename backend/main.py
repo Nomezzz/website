@@ -36,6 +36,7 @@ def download_video():
         subprocess.run([
             "yt-dlp",
             "--no-mtime",
+            "--cookies", "/backend/cookies.txt",
             "-o", output_file,
             video_url
         ], check=True)
