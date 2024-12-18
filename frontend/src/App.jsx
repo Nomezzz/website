@@ -9,7 +9,7 @@ const App = () => {
         try {
             setMessage('Pobieranie...');
             // Przesyłamy dane w zgodzie z backendem
-            const response = await axios.post('http://127.0.0.1:5000/download', { videoUrl });
+            const response = await axios.post('https://yt-downloader-hjv1.onrender.com/download', { videoUrl });
             setMessage(response.data.message);
         } catch (error) {
             setMessage(error.response?.data?.error || 'Coś poszło źle');
