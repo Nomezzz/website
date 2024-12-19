@@ -36,8 +36,7 @@ def download_video():
         subprocess.run([
             "yt-dlp",
             "--no-mtime",
-            "--cookies-from-browser", "opera", 
-            "C:\\Users\\p300\\AppData\\Roaming\\Opera Software\\Opera GX Stable",
+            "--cookies-from-browser", "opera",  
             "-o", output_file,
             video_url
         ], check=True)
