@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from flask import Flask, request, jsonify, send_file, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import subprocess
 
@@ -33,10 +33,11 @@ def download_video():
         
         # Pobieranie wideo za pomocą yt-dlp
         output_file = f"{DEFAULT_DOWNLOAD_FOLDER}/%(title)s.%(ext)s"
+        cookies_file = r"C:\Python\website\backend\cookies.txt"
         subprocess.run([
             "yt-dlp",
             "--no-mtime",
-            "--cookies": r"C:\Python\website\backend\cookies.txt",
+            "--cookiefile", cookies_file,
             "-o", output_file,
             video_url
         ], check=True)
