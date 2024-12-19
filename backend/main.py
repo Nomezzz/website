@@ -33,14 +33,14 @@ def download_video():
         
         # Pobieranie wideo za pomocą yt-dlp
         output_file = f"{DEFAULT_DOWNLOAD_FOLDER}/%(title)s.%(ext)s"
-        cookies_file = r"C:\Python\website\backend\cookies.txt"
         subprocess.run([
             "yt-dlp",
             "--no-mtime",
-            "--cookies", cookies_file,
+            "--cookies-from-browser", "opera",
             "-o", output_file,
             video_url
         ], check=True)
+        
 
         return jsonify({"message": "Pobieranie skończone pomyślnie!"}), 200
 
